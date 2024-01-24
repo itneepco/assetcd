@@ -1,0 +1,58 @@
+<mat-toolbar color="primary" class="mat-elevation-z4">
+    Transaction - Resend Rejected Code (Scheme Not Found)
+</mat-toolbar>
+  
+
+<div>
+    <mat-card>
+        
+        <div class="h-container p-container"> 
+            <!--<div style="width:550px">--> <!-- mapping code selection -->
+            <div [style.width]="(isHandset$ | async) ? '550px' : '70%'">
+                <mat-form-field class="e-full-width">
+                    <mat-select placeholder="Project" [(value)]="project" name="project" (selectionChange)="onProjectChange(project)">
+                        <mat-option value="All">All Projects</mat-option>
+                        <mat-option *ngFor="let project of projects" [value]="project" >{{project.projCode}} :: {{project.projDesc}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <br>
+                <div class="e-full-width hc">
+                    <mat-form-field class="e-full-width hh">
+                        <input type="text" placeholder="Existing Asset Code" aria-label="MappingCode" matInput [formControl]="mappingCodeControl" [matAutocomplete]="auto">
+                        <mat-hint *ngIf="mappingCodeControl.value && (!mappingCodes || mappingCodes.length == 0) && mappingCodeControl.value != mappingCode">No maching codes found.</mat-hint>
+                        <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn"> <!--(optionSelected)='getPosts($event.option.value)'-->
+                            <!--<mat-option *ngFor="let option of filteredMappingCodes | async" [value]="option" (onSelectionChange)="setMappingCode(option)">-->
+                                <mat-option *ngFor="let option of mappingCodes" [value]="option" (onSelectionChange)="setMappingCode(option)">
+                            {{ option?.assetCode + ' :: (' + option?.projCode + ') :: ' + option?.assetDesc }}
+                            </mat-option>
+                        </mat-autocomplete>
+                    </mat-form-field>
+                    <button *ngIf="mappingCode!=null" mat-mini-fab color="primary"  (click)="previous()"><mat-icon>chevron_left</mat-icon></button>
+                    <button *ngIf="mappingCode!=null" mat-mini-fab color="primary"  (click)="next()"><mat-icon>chevron_right</mat-icon></button>
+                    <br>
+                </div>
+                <div *ngIf="mappingCode">
+                    <b>MFGL Code</b><span >&nbsp;&nbsp;</span> {{mappingCode?.mfglCode}} <br>
+                    <!--<b>Asset Code</b><span >&nbsp;&nbsp;</span> {{mappingCode?.assetCode}} <br>
+                    <b>Description</b><span >&nbsp;&nbsp;</span> {{mappingCode?.assetDesc}} <br>-->
+                </div>
+            </div>
+            
+
+            <div *ngIf="mappingCode">
+                <b>S No</b> <span >&nbsp;&nbsp;</span> {{mappingCode?.slno}} <br>
+                <b>REM</b> <span >&nbsp;&nbsp;</span> {{mappingCode?.rem1}} <br>
+            </div>
+        </div>
+        
+        <mat-divider></mat-divider>
+
+        <div *ngIf="mappingCode" class="e-form"> <!-- resend mapping code -->
+
+            <button mat-raised-button disabled="{{!mappingCode || !mappingCode}}" color="primary" (click)="resend()">Resend for Mapping</button>
+            <span >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+            
+        </div>
+
+    </mat-card>
+</div>

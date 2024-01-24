@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.13.0.final using JasperReports Library version 6.13.0-46ada4d1be8f3c5985fd0b6146f3ed44caed6f05  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Rejection_Code_Stats" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="2a55ffdc-0c20-4379-b6b8-e34909c9d661">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="New Data Adapter - assetcd"/>
+	<subDataset name="Dataset1" uuid="e748aff9-3f3d-4a74-8fc1-f49d2bb6bbb6">
+		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="New Data Adapter - DC"/>
+		<queryString language="SQL">
+			<![CDATA[select cl_comp, packg from company where id = 1]]>
+		</queryString>
+		<field name="cl_comp" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="cl_comp"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="company"/>
+		</field>
+		<field name="packg" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="packg"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="company"/>
+		</field>
+	</subDataset>
+	<subDataset name="Dataset2" uuid="16311372-9e3b-4a3b-b526-6978e95a4256">
+		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="New Data Adapter - DC"/>
+		<queryString language="SQL">
+			<![CDATA[select rep_nm from reports_nm where rep_code = '02']]>
+		</queryString>
+		<field name="rep_nm" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="rep_nm"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="reports_nm"/>
+		</field>
+		<group name="rep_nm">
+			<groupExpression><![CDATA[$F{rep_nm}]]></groupExpression>
+		</group>
+	</subDataset>
+	<parameter name="cri" class="java.lang.String"/>
+	<queryString language="SQL">
+		<![CDATA[SELECT mapping_rejected_code.`PROJ_CODE`,
+	mapping_rejected_code.`ASSET_CODE`,
+	mapping_rejected_code.`ASSET_DESC`,
+	mapping_rejected_code.`SLNO`,
+	mapping_rejected_code.`REJ_CODE`,
+	mapping_rejected_code.`REJ_REM`,
+	projects.`PROJ_DESC`
+FROM mapping_rejected_code
+	left join projects ON 
+	  ( 
+	 mapping_rejected_code.`PROJ_CODE` = projects.`PROJ_CODE`)
+where  mapping_rejected_code.proj_code in $P!{cri}
+order by mapping_rejected_code.rej_code, mapping_rejected_code.proj_code, mapping_rejected_code.asset_code]]>
+	</queryString>
+	<field name="PROJ_CODE" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="PROJ_CODE"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="mapping_rejected_code"/>
+	</field>
+	<field name="ASSET_CODE" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="ASSET_CODE"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="mapping_rejected_code"/>
+	</field>
+	<field name="ASSET_DESC" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="ASSET_DESC"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="mapping_rejected_code"/>
+	</field>
+	<field name="SLNO" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="SLNO"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="mapping_rejected_code"/>
+	</field>
+	<field name="REJ_CODE" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="REJ_CODE"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="mapping_rejected_code"/>
+	</field>
+	<field name="REJ_REM" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="REJ_REM"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="mapping_rejected_code"/>
+	</field>
+	<field name="PROJ_DESC" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="PROJ_DESC"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="projects"/>
+	</field>
+	<sortField name="REJ_CODE"/>
+	<sortField name="PROJ_CODE"/>
+	<sortField name="ASSET_CODE"/>
+	<group name="Group1" isStartNewPage="true" keepTogether="true">
+		<groupExpression><![CDATA[$F{REJ_CODE} + $F{PROJ_CODE}]]></groupExpression>
+		<groupHeader>
+			<band/>
+		</groupHeader>
+		<groupFooter>
+			<band/>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="118" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="78" width="580" height="15" uuid="5ae68ed7-c703-42d4-91a9-57b182ddcefb"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["PROJECT: " + $F{PROJ_CODE} + " - " + $F{PROJ_DESC}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="0" y="116" width="800" height="1" uuid="13d92708-cd39-40bd-8760-2987a1071b8d"/>
+			</line>
+			<staticText>
+				<reportElement x="0" y="98" width="30" height="15" uuid="92a5880a-99b9-4cfa-ba01-0a937d10cd3a"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[S NO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="30" y="98" width="50" height="15" uuid="0dd7e333-9d5e-42f3-8228-a49648f2795c"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[REF NO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="80" y="98" width="188" height="15" uuid="f0a18047-1110-40ec-ace0-e0faa71ddadb"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[OLD CODE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="280" y="98" width="319" height="15" uuid="8ff0be32-eba6-4e0c-9dce-d3f9e5b88131"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[OLD ASSET CODE DESCRIPTION]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="610" y="98" width="190" height="15" uuid="2e5f63ce-ae85-485a-82f4-532afa26e3e1"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[REJECTION REMARK]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="680" y="71" width="40" height="10" uuid="a199c331-e543-4b3f-858f-b8ee414cce13"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<text><![CDATA[Page: ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="680" y="82" width="38" height="10" uuid="2f27abf5-2049-408e-9aca-377d14338a20"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<text><![CDATA[Run Date: ]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="720" y="71" width="80" height="10" uuid="39502003-2efd-43c0-ae14-4083df03321b"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField pattern="MMMMM dd, yyyy">
+				<reportElement x="720" y="82" width="80" height="10" uuid="97033e3c-52bd-436a-a8de-e8c9502bc0cb"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="62" width="333" height="15" uuid="d960430b-761f-4771-a89e-e3445ceefdb7"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["REJECT REASON: " +(($F{REJ_CODE}.equals("S")) ? "Scheme not found" : "Insufficient input")]]></textFieldExpression>
+			</textField>
+			<componentElement>
+				<reportElement x="80" y="3" width="600" height="35" uuid="436a733f-ccba-4770-b69a-41dda575b289"/>
+				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+					<datasetRun subDataset="Dataset1" uuid="43a227ce-3d69-4e86-9837-851fa354f169">
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:listContents height="35" width="600">
+						<textField>
+							<reportElement x="0" y="0" width="600" height="15" uuid="148db288-0f83-4198-9f48-bf0815030c4e"/>
+							<textElement textAlignment="Center" verticalAlignment="Middle">
+								<font fontName="Arial" size="11" isBold="true"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$F{cl_comp}]]></textFieldExpression>
+						</textField>
+						<textField>
+							<reportElement x="0" y="19" width="600" height="15" uuid="01ef5ea9-6d62-43a6-b673-185b07fa5d69"/>
+							<textElement textAlignment="Center" verticalAlignment="Middle">
+								<font fontName="Arial" size="11" isBold="true"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$F{packg}]]></textFieldExpression>
+						</textField>
+					</jr:listContents>
+				</jr:list>
+			</componentElement>
+			<componentElement>
+				<reportElement x="80" y="42" width="600" height="15" uuid="7086f104-9dc8-4eae-a06a-ddf998a4f752"/>
+				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+					<datasetRun subDataset="Dataset2" uuid="dacdfd7b-456b-4aa2-a845-02bb0fbca712">
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:listContents height="15" width="600">
+						<textField>
+							<reportElement x="0" y="0" width="600" height="15" uuid="8af9be2e-425d-49fe-bc28-1c1953db4e55"/>
+							<textElement textAlignment="Center" verticalAlignment="Middle">
+								<font fontName="Arial" size="11" isBold="true"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$F{rep_nm}]]></textFieldExpression>
+						</textField>
+					</jr:listContents>
+				</jr:list>
+			</componentElement>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<line>
+				<reportElement x="0" y="-23" width="800" height="1" uuid="5647e020-ac68-4f63-833b-26cc193b8a2b"/>
+			</line>
+			<textField>
+				<reportElement x="1" y="3" width="28" height="12" uuid="22e0a5ad-436e-4b58-add3-3378b4bf9d30"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{Group1_COUNT}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="80" y="3" width="187" height="12" uuid="fcfae75e-adb4-45a8-a95a-c3bfb3436d85"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ASSET_CODE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="280" y="3" width="318" height="12" isRemoveLineWhenBlank="true" uuid="ddbd7595-de1a-473a-9e6a-39ddeecab24e"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ASSET_DESC}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="610" y="3" width="190" height="12" uuid="573b7b4e-ba75-4040-9546-1602bcfff89b"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{REJ_REM}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="1" y="18" width="799" height="1" uuid="77490fed-54d3-4586-a7f1-1506cedc2677"/>
+			</line>
+			<textField isBlankWhenNull="true">
+				<reportElement x="30" y="3" width="50" height="12" uuid="5ad2e878-0bb0-4764-be34-799f7660674c">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{SLNO}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="26" splitType="Stretch">
+			<staticText>
+				<reportElement x="310" y="4" width="110" height="15" uuid="7a412100-4b70-49f4-8089-fad3464b2369"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="11"/>
+				</textElement>
+				<text><![CDATA[** End of Report **]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="0" y="4" width="145" height="15" uuid="0b1407c3-0b84-4c4a-afc9-c74a749c2ff9"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["GRAND TOTAL: " + $V{REPORT_COUNT}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

@@ -1,0 +1,141 @@
+<mat-toolbar color="primary" class="mat-elevation-z4">
+    Transaction - Mapping New Code
+</mat-toolbar>
+
+<div>
+    <mat-card>
+        <div class="h-container p-container"> 
+            <!--<div style="width:550px">--> <!-- mapping code selection -->
+            <div [style.width]="(isHandset$ | async) ? '550px' : '70%'">
+                <mat-form-field class="e-full-width">
+                    <mat-select placeholder="Project" [(value)]="project" name="project" (selectionChange)="onProjectChange(project)">
+                      <mat-option value="All">All Projects</mat-option>
+                      <mat-option *ngFor="let project of projects" [value]="project" >{{project.projCode}} :: {{project.projDesc}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <br>
+                <!--<div class="e-full-width hc">
+                    <mat-form-field class="e-full-width hh">
+                        <input type="text" placeholder="Existing Asset Code" aria-label="MappingCode" matInput [formControl]="mappingCodeControl" [matAutocomplete]="auto">
+                        <mat-hint *ngIf="mappingCodeControl.value && (!mappingCodes || mappingCodes.length == 0) && mappingCodeControl.value != mappingCode">No maching codes found.</mat-hint>
+                        <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn"> </!--(optionSelected)='getPosts($event.option.value)'--/>
+                            <mat-option *ngFor="let option of filteredMappingCodes | async" [value]="option" (onSelectionChange)="setMappingCode(option)">
+                            {{ option?.assetCode + ' :: (' + option?.projCode + ') :: ' + option?.assetDesc }}
+                            </mat-option>
+                        </mat-autocomplete>
+                    </mat-form-field>
+                    <button *ngIf="mappingCode!=null" mat-mini-fab color="primary"  (click)="previous()"><mat-icon>chevron_left</mat-icon></button>
+                    <button *ngIf="mappingCode!=null" mat-mini-fab color="primary"  (click)="next()"><mat-icon>chevron_right</mat-icon></button>
+                    <br>
+                </div>-->
+                <div>
+                    <mat-form-field style="width: 50%;">
+                        <input matInput [(ngModel)]="searchText" name="searchText" placeholder="Search existing asset code" maxlength="300" (change)="fieldChanged()" (keyup)="calcDesc()">
+                    </mat-form-field>
+                    <button mat-raised-button *ngIf="searchText?.length > 2" color="primary" (click)="fetchMC()">Fetch</button>
+                    <mat-spinner *ngIf="loading" [diameter]="20"></mat-spinner>
+                    <br>
+                </div>
+                <mat-form-field class="e-full-width" *ngIf="mappingCodes">
+                    <mat-select placeholder="Existing Asset Code" [(value)]="mappingCode" name="mappingCode" (selectionChange)="setMappingCode(mappingCode)">
+                      <mat-option [value]="null"></mat-option>
+                      <mat-option *ngFor="let mc of mappingCodes" [value]="mc" >{{mc?.assetCode}} :: {{mc?.projCode}} :: {{mc?.assetDesc}}</mat-option>
+                    </mat-select>
+                    <mat-hint>{{mappingCodes?.length}} codes</mat-hint>
+                </mat-form-field>
+                <br>
+                <div *ngIf="mappingCode">
+                    <b>GL Code</b><span >&nbsp;&nbsp;</span> {{glMfglClassCode?.glCode}} :: {{glMfglClassCode?.glDesc}} <br>
+                    <b>Sub Class</b><span >&nbsp;&nbsp;</span> {{glMfglClassCode?.subClass}} :: {{glMfglClassCode?.descr}} <br>
+                </div>
+            </div>
+            <div *ngIf="mappingCode">
+                <b>S No</b> <span >&nbsp;&nbsp;</span> {{mappingCode?.slno}} <br>
+                <b>REM</b> <span >&nbsp;&nbsp;</span> {{mappingCode?.rem1}} <br>
+                <b>MFGL Code</b><span >&nbsp;&nbsp;</span> {{mappingCode?.mfglCode}} <br>
+            </div>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <div *ngIf="mappingCode">
+            <div *ngIf="glMfglClassCode" class="e-form"> <!-- new mapping code -->
+                <!--<b>Asset Class</b> <span >&nbsp;&nbsp;</span> {{glMfglClassCode?.classCode}} <br>
+                <b>Description</b> <span >&nbsp;&nbsp;</span> {{glMfglClassCode?.descr}} <br>
+                <br>-->
+                <div class="e-full-width">
+                    <mat-form-field class="e-full-width">
+                        <input type="text" placeholder="GL CODE" aria-label="glcode" matInput [formControl]="glCodeControl" [matAutocomplete]="auto2">
+                        <mat-autocomplete autoActiveFirstOption #auto2="matAutocomplete" [displayWith]="displayFn2.bind(this)" (optionSelected)='onCodeChangePre();onGlCodeChange($event.option.value)'>
+                            <!--<mat-option></mat-option>-->
+                            <mat-option *ngFor="let option of filteredGlCodes | async" [value]="option">
+                            {{option.glCode}} :: {{option.descr}}
+                            </mat-option>
+                        </mat-autocomplete>
+                    </mat-form-field>
+                    <br>
+                    <mat-form-field class="e-full-width">
+                        <input type="text" placeholder="SUB CLASS" aria-label="code" matInput [formControl]="codeControl" [matAutocomplete]="auto1">
+                        <mat-autocomplete autoActiveFirstOption #auto1="matAutocomplete" [displayWith]="displayFn1.bind(this)" (optionSelected)='onCodeChangePre();onCodeChange($event.option.value)'>
+                            <!--<mat-option></mat-option>-->
+                            <mat-option *ngFor="let option of filteredCodes | async" [value]="option">
+                            {{option.subClass}} :: {{option.descr}}
+                            </mat-option>
+                        </mat-autocomplete>
+                    </mat-form-field>
+                    <br>
+                    
+                    <div *ngIf="code">
+                        <b>MFGL CODE</b> <span >&nbsp;&nbsp;</span> {{code?.mfglCode}} <br>
+                        <br>
+                        <mat-form-field class="e-full-width">
+                            <input type="number" placeholder="ASSET No" matInput [(ngModel)]="runNo" name="runNo" #nrunNo="ngModel" required disabled>
+                        </mat-form-field>
+                        <br>
+                        <!--<mat-form-field class="e-full-width">
+                            <input matInput [(ngModel)]="preDescr" name="preDescr" placeholder="Pre Description" maxlength="300" (change)="fieldChanged()" (keyup)="calcDesc()">
+                        </mat-form-field>
+                        <br>-->
+                        <mat-form-field class="e-full-width">
+                            <input matInput [(ngModel)]="descr" name="descr" placeholder="Description" required maxlength="300" (change)="fieldChanged()" (keyup)="updateShortDesc()">
+                        </mat-form-field>
+                        <br>
+                        <!--<mat-form-field class="e-full-width">
+                            <input matInput [(ngModel)]="postDescr" name="postDescr" placeholder="Post Description" maxlength="300" (change)="fieldChanged()" (keyup)="calcDesc()">
+                        </mat-form-field>
+                        <br>-->
+                        <mat-form-field class="e-full-width">
+                            <input matInput [(ngModel)]="shortDescr" name="shortDescr" placeholder="Asset Short Desc" required maxlength="300" (change)="fieldChanged()">
+                            <mat-hint>{{shortDescr?.length}}</mat-hint>
+                            <mat-hint *ngIf="shortDescr && shortDescr.length >= 51" class="red-color">...Short Description should not be more than 50 characters</mat-hint>
+
+                        </mat-form-field>
+                        <br>
+
+                        <b><p>{{glCode?.glCode.slice(-4)}}{{code?.subClass}}{{prependZero(runNo)}} :: {{descr}}</p></b>
+                        <mat-form-field class="e-full-width" *ngIf="masDescs.length > 0">
+                            <mat-select placeholder="Mas Desc (New :: Short)" [(value)]="masDesc" name="masDesc" (selectionChange)="onMasDescChange(masDesc)">
+                              <mat-option></mat-option>
+                              <mat-option *ngFor="let masDesc of masDescs" [value]="masDesc" >{{masDesc.newDesc}} :: {{masDesc.shortDesc}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        <br>
+                    </div>
+                </div>
+
+            </div>
+            <div *ngIf="!glMfglClassCode">
+                No matching Mfgl Class Code found
+            </div>
+
+            <button mat-raised-button  (click)="openRejectDialog()">Reject</button>
+            <button mat-raised-button disabled="{{!code || !shortDescr || (shortDescr?.length >= 51)}}" color="primary" (click)="preSave()">Save</button>
+            <span >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+            <!--<button mat-raised-button *ngIf="code && masDescs" color="primary" (click)="openRejectDialog()">Use DESC from MAS</button>-->
+        
+        </div>
+
+    </mat-card>
+</div>
+
+  

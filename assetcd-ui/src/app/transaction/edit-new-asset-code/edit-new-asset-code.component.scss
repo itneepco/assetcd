@@ -1,0 +1,41 @@
+.e-form {
+    min-width: 150px;
+    max-width: 800px;
+    width: 100%;
+  }
+  
+  .e-full-width {
+    width: 100%;
+  }
+  
+  .e-block {
+    margin: 12px;
+  }
+  
+  .h-container {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  
+  .p-container {
+      background-color: pink;
+  }
+  
+  .hc {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    justify-content: flex-end;
+  }
+  
+  .hh {
+    flex: 1;
+  }
+  
+  .red-color {
+    color: red; 
+  }
+  
+  
+  
+  

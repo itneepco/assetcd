@@ -1,0 +1,120 @@
+<mat-toolbar color="primary" class="mat-elevation-z4">
+    Add / Update Sub Class Code
+</mat-toolbar>
+
+<mat-form-field class="e-full-width">
+    <input type="text" placeholder="GL Code" aria-label="glCode" matInput [formControl]="glCodeControl" [matAutocomplete]="auto">
+    <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" [displayWith]="displayFn1.bind(this)" (optionSelected)='onGlCodeChange($event.option.value)'>
+        <mat-option *ngFor="let option of filteredGlCodes | async" [value]="option">
+        {{option.glCode}} :: {{option.descr}}
+        </mat-option>
+    </mat-autocomplete>
+</mat-form-field>
+<br>
+<br>
+
+<div *ngIf="selectedGlCode && !isNew && !isUpload && !isEdit"> <!-- select existing code block -->
+    <mat-form-field class="e-full-width">
+        <input type="text" placeholder="Class Code" aria-label="classCode" matInput [formControl]="glMfglClassCodeControl" [matAutocomplete]="auto1">
+        <mat-autocomplete autoActiveFirstOption #auto1="matAutocomplete" [displayWith]="displayFn.bind(this)" (optionSelected)='onGlMfglClassCodeChange($event.option.value)'>
+            <mat-option *ngFor="let option of filteredGlMfglClassCodes | async" [value]="option">
+            {{option.subClass}} :: {{option.descr}}
+            </mat-option>
+        </mat-autocomplete>
+    </mat-form-field>
+    <button mat-raised-button (click)="onNewCode()">Add New</button>
+    <button *ngIf="selectedGlMfglClassCode" mat-raised-button (click)="onEditCode()">Edit Code</button>
+    <button mat-raised-button (click)="onUploadCodes()">Upload Codes</button>
+    <button mat-raised-button (click)="onExportCodes()">Export Codes</button>
+    <br>
+    <br>
+</div>
+
+<div *ngIf="isNew"> <!-- add new code block -->
+    <b>MFGL CLASS CODE</b>
+    <br>
+    <div *ngIf="errorMessage">
+        <span style="color:red">!! {{errorMessage}}</span>
+        <br>
+    </div>
+    <form #newCodeForm="ngForm" >
+        <mat-form-field class="e-full-width">
+            <input matInput [(ngModel)]="newCode" name="newCode" placeholder="Sub Class" #cc="ngModel" required maxlength="2" minlength="2">
+            <mat-hint >length 2</mat-hint>
+            <!--<mat-error *ngIf="cc.errors?.pattern">The code should be in XX01 format.</mat-error>-->
+        </mat-form-field>
+        <br>
+        <mat-form-field class="e-full-width">
+            <input matInput [(ngModel)]="newDescr" name="newDescr" placeholder="Description" required maxlength="300">
+        </mat-form-field>
+        <br>
+        <mat-form-field class="e-full-width">
+            <input matInput [(ngModel)]="newMfglCode" name="newMfglCode" #ncode="ngModel" placeholder="Mfgl Code" required [pattern]="regxnum" maxlength="6" minlength="6">
+            <mat-hint >length 6</mat-hint>
+            <mat-error *ngIf="ncode.errors?.pattern">The code should be number.</mat-error>
+        </mat-form-field>
+        <br>
+
+        <button mat-raised-button (click)="onSelectExisitingCode()">Cancel</button>
+        <button mat-raised-button color="primary" (click)="onSaveNew()" disabled="{{!newCodeForm.valid}}">Save</button>
+        <br>
+
+    </form>
+</div>
+
+<div *ngIf="isEdit"> <!-- edit code block -->
+    <b>MFGL CLASS CODE</b>
+    <br>
+    <div *ngIf="errorMessage">
+        <span style="color:red">!! {{errorMessage}}</span>
+        <br>
+    </div>
+    <form #editCodeForm="ngForm" >
+        <p>Sub Class: {{selectedGlMfglClassCode?.subClass}}</p>
+        <mat-form-field class="e-full-width">
+            <input matInput [(ngModel)]="descr" name="descr" placeholder="Description" required maxlength="300">
+        </mat-form-field>
+        <br>
+        <mat-form-field class="e-full-width">
+            <input matInput [(ngModel)]="mfglCode" name="mfglCode" #ncode1="ngModel" placeholder="Mfgl Code" required [pattern]="regxnum" maxlength="6" minlength="6">
+            <mat-hint >length 6</mat-hint>
+            <mat-error *ngIf="ncode1.errors?.pattern">The code should be number.</mat-error>
+        </mat-form-field>
+        <br>
+
+        <button mat-raised-button (click)="onCancel()">Cancel</button>
+        <button mat-raised-button (click)="onUpdate()" color="primary" disabled="{{!editCodeForm.valid}}">Save</button>
+        <br>
+
+    </form>
+</div>
+
+<div *ngIf="isUpload"> <!-- upload codes block -->
+    <b>MFGL CLASS CODE</b>
+    <br>
+    <div *ngIf="!uploadInProgress">
+        <div *ngIf="uploadError">
+          <p>{{uploadError}}</p>
+          <button mat-raised-button color="primary"  (click)="downloadErrors()">Download Errors</button>
+        </div>
+        <p>{{uploadMessage}}</p>
+        <input type="file" (change)="fileChange($event)" placeholder="Select file" accept=".csv">
+    
+        <br>
+        <br>
+        <button mat-raised-button color="primary"  (click)="uploadCodes()" disabled="{{!file}}">Upload CSV file</button>
+        <P>
+          Please note, the first line in the cvs file must contain the column names.
+          (MFGL_CODE, SUB_CLASS, DESCR)
+        </P>
+        <br>
+    
+        <button mat-raised-button (click)="onBackToSelectExisitingCode()">Back</button>
+      </div>
+      <div  *ngIf="uploadInProgress">
+        <mat-spinner></mat-spinner>
+      </div>
+    
+    
+</div>
+

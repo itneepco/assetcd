@@ -1,0 +1,72 @@
+<mat-toolbar color="primary" class="mat-elevation-z4">
+  User Profile
+</mat-toolbar>
+
+<mat-card>
+
+  <div *ngIf="!isEdit">
+      <h4 matLine> Personal Information </h4>
+      <b>First Name</b> <span >&nbsp;&nbsp;</span> {{user?.firstName}} <br>
+      <b>Last Name</b> <span >&nbsp;&nbsp;</span> {{user?.lastName}} <br>
+      <b>User Code</b> <span >&nbsp;&nbsp;</span> {{user?.userCode}} <br>
+      <b>Email</b> <span >&nbsp;&nbsp;</span> {{user?.email}} <br>
+      <br>
+
+      <button mat-raised-button color="primary" (click)='edit()'>Edit</button>
+      <button *ngIf="isAdmin" mat-raised-button color="primary" (click)='resetPassword()'>Reset Password</button>
+      <button *ngIf="isCurrentUser"mat-raised-button color="primary" (click)='changePassword()' >Change Password</button>
+      <!--<button *ngIf="!user?.status" mat-raised-button color="primary" (click)='edit()' >Activate</button>
+      <button *ngIf="user?.status" mat-raised-button color="primary" (click)='edit()' >De-activate</button>-->
+      
+  </div>
+
+  <div *ngIf="isEdit">
+    <form #editUserForm="ngForm" >
+      <mat-form-field >
+        <input matInput placeholder="First Name" [(ngModel)]="firstName" name="first"  required>
+      </mat-form-field>
+      <br>
+      <mat-form-field >
+        <input matInput placeholder="Last Name" [(ngModel)]="lastName" name="second" required>
+      </mat-form-field>
+      <br>
+      <mat-form-field >
+        <input matInput placeholder="Email" [(ngModel)]="email" email #uemail="ngModel" name="email" required>
+        <mat-error *ngIf="uemail.errors?.email">Pleaes enter valid email</mat-error>
+      </mat-form-field>
+      <br>
+    
+      <button mat-raised-button (click)='cancelChanges()' >Cancel</button>
+      <button mat-raised-button color="primary" (click)='saveChanges()' disabled="{{!editUserForm.valid}}">Save</button>
+    </form>
+  </div>
+  
+  <div *ngIf="isAdmin">
+    <mat-divider></mat-divider>
+
+    <h4 matLine> Roles </h4>
+    <ul *ngIf="user?.roles">
+      <li *ngFor="let role of user.roles">
+        <p matLine>
+          <span> {{role.name}} </span>
+          <span >&nbsp;&nbsp;</span>
+          <button mat-icon-button (click)="deleteRole(role)"><mat-icon>clear</mat-icon></button>
+        </p>
+      </li>
+    </ul>
+
+    <mat-divider></mat-divider>
+
+    <h4 matLine> Add new role </h4>
+    <ul *ngIf="filteredRoles?.length > 0">
+      <li *ngFor="let role of filteredRoles">
+        <p matLine>
+          <span> {{role.name}} </span>
+          <span >&nbsp;&nbsp;</span>
+          <button mat-icon-button color="primary" (click)='addRole(role)' ><mat-icon>add</mat-icon></button>
+        </p>
+      </li>
+    </ul> 
+  </div> 
+  
+</mat-card>

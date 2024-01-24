@@ -1,0 +1,76 @@
+<mat-sidenav-container class="sidenav-container">
+  <mat-sidenav #drawer class="sidenav"  
+      [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
+      [mode]="(isHandset$ | async) ? 'over' : 'side'"
+      [opened]="(isHandset$ | async) === false">
+    <!--<mat-toolbar>Menu</mat-toolbar>-->
+    <mat-nav-list>
+      <mat-expansion-panel *ngIf="isAdmin" class="app-class">
+        <mat-expansion-panel-header>
+           <a mat-list-item><b>Administration</b></a>
+        </mat-expansion-panel-header>
+        <a mat-list-item (click)='userAdministration()'>User Administration</a>
+        <a mat-list-item (click)='tableStats()'>Table Stats</a>
+      </mat-expansion-panel>
+      <mat-expansion-panel *ngIf="isAdmin || isAssetIssuer" class="app-class">
+        <mat-expansion-panel-header>
+          <a mat-list-item ><b>Transaction</b></a>
+        </mat-expansion-panel-header>
+        <!--<mat-list style="margin-left:30px;">-->
+          <a mat-list-item (click)='txAssetCode()'>Mapping New Codes</a>
+          <a mat-list-item (click)='txEditNewAssetCode()'>Edit Mapping Code</a>
+          <a mat-list-item (click)='txEditInsufficientInputRejectedAssetCode()'>Edit Reject (Insufficient Input)</a>
+          <a mat-list-item (click)='txResendSchemeNotFoundRejectedAssetCode()'>Resend Reject (Sceheme Not Found)</a>
+        <!--</mat-list>-->
+      </mat-expansion-panel>
+      <mat-expansion-panel *ngIf="isAdmin || isHOD" class="app-class">
+        <mat-expansion-panel-header>
+           <a mat-list-item><b>Reports</b></a>
+        </mat-expansion-panel-header>
+        <a mat-list-item (click)='rAssetDetail("ovn")'>Old Codes vs New Codes</a>
+        <a mat-list-item (click)='rAssetDetail("nvo")'>New Codes vs Old Codes</a>
+        <a mat-list-item (click)='rAssetDetail("sor")'>Old Codes vs New Codes (RefId)</a>
+        <a mat-list-item (click)='rRejStatus()'>Rejection Status</a>
+        <a mat-list-item (click)='rCodeMappingProgress()'>Code Mapping Progress</a>
+        <a mat-list-item (click)='rCoderProgress()'>Coder Progress</a>
+      </mat-expansion-panel>
+      <mat-expansion-panel *ngIf="isAdmin || isSystemUser" class="app-class">
+        <mat-expansion-panel-header>
+            <a mat-list-item><b>Master Data</b></a>
+        </mat-expansion-panel-header>
+        <!--<a mat-list-item (click)='addUpdateCode()'>Add / Update Schemes</a>-->
+        <!--<a mat-list-item (click)='addUpdateAttr()'>Add / Update Attributes</a>-->
+        <a mat-list-item (click)='addUpdateGlCode()'>Add / Update GL Code</a>
+        <a mat-list-item (click)='addUpdateMfglClassCode()'>Add / Update Sub Class Code</a>
+        <a mat-list-item (click)='addUpdateProj()'>Add / Update Project</a>
+      </mat-expansion-panel>
+      <mat-expansion-panel *ngIf="isAdmin || isAssetIssuer" class="app-class">
+        <mat-expansion-panel-header>
+            <a mat-list-item><b>Services</b></a>
+        </mat-expansion-panel-header>
+        <a mat-list-item (click)='uploadAssetCode()'>Upload old code list</a>
+        <a mat-list-item (click)='uploadNewAssetCode()'>Upload new asset code list</a>
+        <a mat-list-item (click)='uploadMappedCode()'>Upload mapped code list</a>
+        <a mat-list-item (click)='rAssetDetail("gbu")'>Report: Old vs New (Group By User)</a>
+        <a mat-list-item (click)='showHelp()'>Help</a>
+      </mat-expansion-panel>
+    </mat-nav-list>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <!--<mat-toolbar color="primary">
+      <button
+        type="button"
+        aria-label="Toggle sidenav"
+        mat-icon-button
+        (click)="drawer.toggle()"
+        *ngIf="isHandset$ | async">
+        <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+      </button>
+      <span>{{pageTitle}}</span>
+    </mat-toolbar>-->
+    <!-- Add Content Here -->
+    <div class="f-sidenav-content">
+      <router-outlet></router-outlet>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>

@@ -1,0 +1,29 @@
+.e-container {
+    display: flex;
+    flex-direction: column;
+    max-height: 400px;
+    //min-width: 300px;
+    max-width: 400px;
+  }
+  
+  .mat-table {
+    overflow: auto;
+    max-height: 450px;
+  }
+  
+  .mat-column-select {
+    overflow: visible;
+    flex: 0 0 50px;
+  }
+  
+  .mat-column-projCode {
+    //overflow: visible;
+    flex: 0 0 100px;
+  }
+  
+  .mat-header-row {
+    //position: sticky;
+    //position: -webkit-sticky;
+    //top: 0;
+      background-color: pink;
+  }

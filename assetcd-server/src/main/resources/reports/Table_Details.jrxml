@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.5.1.final using JasperReports Library version 6.5.1  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Table_Details" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="3dea1bd4-1998-4d2c-a9cc-9cf26c95d01f">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="New Data Adapter - DC"/>
+	<parameter name="db" class="java.lang.String"/>
+	<queryString language="SQL">
+		<![CDATA[SELECT table_name, table_rows FROM information_schema.tables WHERE table_type = 'base table' AND table_schema='$P!{db}']]>
+	</queryString>
+	<field name="table_name" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="table_name"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="TABLES"/>
+	</field>
+	<field name="table_rows" class="java.math.BigInteger">
+		<property name="com.jaspersoft.studio.field.label" value="table_rows"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="TABLES"/>
+	</field>
+	<group name="table_name">
+		<groupExpression><![CDATA[$F{table_name}]]></groupExpression>
+	</group>
+	<group name="table_rows">
+		<groupExpression><![CDATA[$F{table_rows}]]></groupExpression>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="54" splitType="Stretch">
+			<staticText>
+				<reportElement x="50" y="35" width="100" height="15" uuid="e1ae8d10-9e2b-4713-97ea-ae1a2b94ddf4"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Table Name]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="360" y="35" width="100" height="15" uuid="f3509d3a-86f3-4fa5-b728-d6c58c161bed"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Record Count]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="415" y="13" width="40" height="10" uuid="a5c39203-19e3-4421-b0c2-9ea58e387fd8"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<text><![CDATA[Page: ]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="455" y="13" width="80" height="10" uuid="6cbfed17-0356-4cb0-b7c8-ecb6ec40017f"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="415" y="23" width="38" height="10" uuid="6ea96bc2-5b78-462d-9f15-cc8b54e5b2cf"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<text><![CDATA[Run Date: ]]></text>
+			</staticText>
+			<textField pattern="MMMMM dd, yyyy">
+				<reportElement x="455" y="22" width="120" height="10" uuid="4d11038f-ce93-4652-822e-38a3a8a1a70a"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new SimpleDateFormat("d MMM yyyy HH:mm:ss Z").format(new java.util.Date())]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="227" y="0" width="123" height="18" uuid="4284ab33-3569-4088-8490-e8eb1219f100"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TABLE STATISTICS]]></text>
+			</staticText>
+			<line>
+				<reportElement x="-20" y="33" width="595" height="1" uuid="f4361ebd-7153-498b-9e3a-eb4bf95c0b3e"/>
+			</line>
+			<line>
+				<reportElement x="-20" y="52" width="595" height="1" uuid="db87cf93-3f96-481b-8f9b-22a3ce71a9cd"/>
+			</line>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="21" splitType="Stretch">
+			<textField>
+				<reportElement x="50" y="2" width="210" height="15" uuid="41bf6da7-c67a-46a6-bab3-e320b13695fe"/>
+				<textFieldExpression><![CDATA[$F{table_name}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="360" y="2" width="100" height="15" uuid="25f49e98-6e18-4a13-b251-185efde85080"/>
+				<textFieldExpression><![CDATA[$F{table_rows}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="-20" y="19" width="595" height="1" uuid="240e1eef-d95e-4118-b48f-2527be56b501"/>
+			</line>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

@@ -1,0 +1,27 @@
+.f-full-width {
+    width: 100%;
+  }
+  
+  .mat-elevation-z4 {
+     position: relative;
+     z-index: 4;
+  }
+  
+  mat-card {
+      top: 30px;
+    margin: auto;
+    max-width: 400px;
+    text-align: center;
+    /*align-self: center;*/
+  }
+  
+  .f-bk {
+      background-image: url(/assets/body_bg.jpg);
+      height: 100%; 
+  
+      /* Center and scale the image nicely */
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: cover;
+  }
+  

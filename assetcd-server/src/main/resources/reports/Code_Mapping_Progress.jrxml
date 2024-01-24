@@ -1,0 +1,419 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.13.0.final using JasperReports Library version 6.13.0-46ada4d1be8f3c5985fd0b6146f3ed44caed6f05  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Code_Mapping_Progress_Report" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="378950aa-1237-48c9-b1fe-6a3131593979">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="New Data Adapter - assetcd"/>
+	<subDataset name="Dataset2" uuid="bf389c7e-0f55-4e92-b0d7-9d50085f1254">
+		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="New Data Adapter - DC"/>
+		<queryString language="SQL">
+			<![CDATA[select cl_comp, packg from company where id = 1]]>
+		</queryString>
+		<field name="cl_comp" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="cl_comp"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="company"/>
+		</field>
+		<field name="packg" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="packg"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="company"/>
+		</field>
+		<group name="cl_comp">
+			<groupExpression><![CDATA[$F{cl_comp}]]></groupExpression>
+		</group>
+	</subDataset>
+	<subDataset name="Dataset3" uuid="4ff5064f-94d0-4f5f-a473-4b8a57489a5b">
+		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="New Data Adapter - DC"/>
+		<queryString language="SQL">
+			<![CDATA[select rep_nm from reports_nm where rep_code = '03']]>
+		</queryString>
+		<field name="rep_nm" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="rep_nm"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="reports_nm"/>
+		</field>
+		<group name="rep_nm">
+			<groupExpression><![CDATA[$F{rep_nm}]]></groupExpression>
+		</group>
+	</subDataset>
+	<parameter name="cri" class="java.lang.String"/>
+	<queryString language="SQL">
+		<![CDATA[select p.PROJ_CODE, p.PROJ_DESC, 
+IFNULL(mc.mc_count, 0) mc_count, 
+IFNULL(mnc.mnc_count, 0) mnc_count, 
+IFNULL(mncsd.mnc_count_sd, 0) mnc_count_sd,
+IFNULL(mrcr.mrc_count_r, 0) mrc_count_r, 
+IFNULL(mrcs.mrc_count_s, 0) mrc_count_s
+from projects p
+left join (
+select proj_code, count(asset_code) mc_count from mapping_code
+where PROJ_CODE in $P!{cri}
+group by proj_code
+) mc on (p.PROJ_CODE = mc.PROJ_CODE) 
+left join (
+select proj_code, count(asset_code) mnc_count from mapping_new_code
+where PROJ_CODE in $P!{cri}
+group by proj_code
+) mnc on (p.PROJ_CODE = mnc.proj_code)
+left join (
+select proj_code, count(asset_code) mnc_count_sd from mapping_new_code
+where PROJ_CODE in $P!{cri} and (new_asset_short_desc != '' and new_asset_short_desc is not null)
+group by proj_code
+) mncsd on (p.PROJ_CODE = mncsd.proj_code)
+left join (
+select proj_code, count(asset_code) mrc_count_r from mapping_rejected_code
+where PROJ_CODE in $P!{cri} and rej_code = 'R'
+group by proj_code
+) mrcr on (p.PROJ_CODE = mrcr.proj_code)
+left join (
+select proj_code, count(asset_code) mrc_count_s from mapping_rejected_code
+where PROJ_CODE in $P!{cri} and rej_code = 'S'
+group by proj_code
+) mrcs on (p.PROJ_CODE = mrcs.proj_code)
+where p.PROJ_CODE in $P!{cri}
+order by p.PROJ_CODE]]>
+	</queryString>
+	<field name="PROJ_CODE" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="PROJ_CODE"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="projects"/>
+	</field>
+	<field name="PROJ_DESC" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="PROJ_DESC"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="projects"/>
+	</field>
+	<field name="mc_count" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.label" value="mc_count"/>
+	</field>
+	<field name="mnc_count" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.label" value="mnc_count"/>
+	</field>
+	<field name="mnc_count_sd" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.label" value="mnc_count_sd"/>
+	</field>
+	<field name="mrc_count_r" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.label" value="mrc_count_r"/>
+	</field>
+	<field name="mrc_count_s" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.label" value="mrc_count_s"/>
+	</field>
+	<variable name="total_mc" class="java.lang.Integer" calculation="Sum">
+		<variableExpression><![CDATA[$F{mc_count}]]></variableExpression>
+	</variable>
+	<variable name="total_mnc" class="java.lang.Integer" calculation="Sum">
+		<variableExpression><![CDATA[$F{mnc_count}]]></variableExpression>
+	</variable>
+	<variable name="total_mnc_sd" class="java.lang.Integer" calculation="Sum">
+		<variableExpression><![CDATA[$F{mnc_count_sd}]]></variableExpression>
+	</variable>
+	<variable name="total_mrcr" class="java.lang.Integer" calculation="Sum">
+		<variableExpression><![CDATA[$F{mrc_count_r}]]></variableExpression>
+	</variable>
+	<variable name="total_mrcs" class="java.lang.Integer" calculation="Sum">
+		<variableExpression><![CDATA[$F{mrc_count_s}]]></variableExpression>
+	</variable>
+	<group name="PROJ_CODE">
+		<groupExpression><![CDATA[$F{PROJ_CODE}]]></groupExpression>
+	</group>
+	<group name="PROJ_DESC">
+		<groupExpression><![CDATA[$F{PROJ_DESC}]]></groupExpression>
+	</group>
+	<group name="mc_count">
+		<groupExpression><![CDATA[$F{mc_count}]]></groupExpression>
+	</group>
+	<group name="mnc_count">
+		<groupExpression><![CDATA[$F{mnc_count}]]></groupExpression>
+	</group>
+	<group name="mnc_count_sd">
+		<groupExpression><![CDATA[$F{mnc_count_sd}]]></groupExpression>
+	</group>
+	<group name="mrc_count_r">
+		<groupExpression><![CDATA[$F{mrc_count_r}]]></groupExpression>
+	</group>
+	<group name="mrc_count_s">
+		<groupExpression><![CDATA[$F{mrc_count_s}]]></groupExpression>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="1" splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="103" splitType="Stretch">
+			<componentElement>
+				<reportElement x="99" y="2" width="580" height="30" uuid="dbe51408-e65a-4885-a308-8bc05e8ee147">
+					<property name="net.sf.jasperreports.export.headertoolbar.table.name" value=""/>
+				</reportElement>
+				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+					<datasetRun subDataset="Dataset2" uuid="a680478d-7ba1-4466-bb72-0bacf106e0e1">
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:listContents height="30" width="580">
+						<textField>
+							<reportElement x="0" y="0" width="580" height="15" uuid="1d838e2e-f015-4e60-84a1-78a5569d2de4"/>
+							<textElement textAlignment="Center" verticalAlignment="Middle">
+								<font fontName="Arial" size="12" isBold="true"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$F{cl_comp}]]></textFieldExpression>
+						</textField>
+						<textField>
+							<reportElement x="0" y="15" width="580" height="15" uuid="3b1497d4-35e4-4cbf-a2c8-ac7d6350ee3a"/>
+							<textElement textAlignment="Center" verticalAlignment="Middle">
+								<font fontName="Arial" size="12" isBold="true"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$F{packg}]]></textFieldExpression>
+						</textField>
+					</jr:listContents>
+				</jr:list>
+			</componentElement>
+			<componentElement>
+				<reportElement x="99" y="33" width="580" height="15" uuid="79783651-57f4-4809-8d5c-bc57bb512f73"/>
+				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+					<datasetRun subDataset="Dataset3" uuid="f81d0e1b-1f39-4df1-8719-72b23599e9dc">
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:listContents height="15" width="580">
+						<textField>
+							<reportElement x="0" y="0" width="580" height="15" uuid="1f27961a-211b-4c30-aec7-9d7057cf1dde"/>
+							<textElement textAlignment="Center" verticalAlignment="Middle">
+								<font fontName="Arial" size="12" isBold="true"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$F{rep_nm}]]></textFieldExpression>
+						</textField>
+					</jr:listContents>
+				</jr:list>
+			</componentElement>
+			<staticText>
+				<reportElement x="646" y="49" width="54" height="10" uuid="5717a013-0de1-44df-92ea-a318a7c66171"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<text><![CDATA[Page: ]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="700" y="49" width="100" height="10" uuid="b9d5b07c-1f3a-4a26-b494-8c18e131dff9"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="646" y="59" width="54" height="10" uuid="0c51ae44-7e56-401d-a080-2bd847e8f0d5"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<text><![CDATA[Run Date: ]]></text>
+			</staticText>
+			<textField pattern="MMMMM dd, yyyy">
+				<reportElement x="700" y="59" width="100" height="10" uuid="1d4511c6-0fb2-48ca-bffd-f14f01320560"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="0" y="71" width="800" height="1" uuid="ef9318ec-d461-429e-9e38-a2c8852deee9"/>
+			</line>
+			<staticText>
+				<reportElement x="0" y="73" width="30" height="12" uuid="0fe22ff6-809e-49e0-97b1-8e40253f9723"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[S NO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="30" y="73" width="270" height="12" uuid="76fc5570-7ce5-4cf7-8e0f-d1715ae5ce0f"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PROJECT]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="300" y="73" width="90" height="12" uuid="027fdd98-ccbb-4dcf-be1b-3480bf0d1fb5"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PENDING CODES]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="390" y="73" width="100" height="12" uuid="a5434be6-c0fb-42f6-8f73-69e3a364e18d"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[MAPPED CODES]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="720" y="73" width="80" height="24" uuid="122315ba-f991-4801-b415-c40da406b36c"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TOTAL CODES RECEIVED]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="490" y="73" width="230" height="12" uuid="3d28b603-1ba6-43d8-83f9-55dc1654969d"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[REJECTED CODES]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="490" y="85" width="100" height="12" uuid="6f72bacc-4423-4a6a-bf36-3a46038f4267"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[INSUFFICIENT INFO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="590" y="85" width="130" height="12" uuid="d5978081-35a8-4cd6-9b33-a51ab27d5215"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[SCHEME NOT AVAILABLE]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="99" width="800" height="1" uuid="62653917-f71f-418a-888f-7c6bc6c040ac"/>
+			</line>
+			<staticText>
+				<reportElement x="390" y="86" width="72" height="12" uuid="f1b8ad42-1c69-4ca6-bf15-01479e501028"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[SHORT DESC]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="30" splitType="Stretch">
+			<textField>
+				<reportElement x="1" y="1" width="29" height="12" uuid="ff21ec72-ffa9-4c20-9558-6cae747b1c5d"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="30" y="1" width="270" height="12" uuid="1c180010-0f0a-4719-a79c-5f87beccaa9c"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{PROJ_CODE} + " - " + $F{PROJ_DESC}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="300" y="1" width="90" height="12" uuid="89cd45c6-220e-466a-a3db-244b3df0021d"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{mc_count}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="390" y="1" width="100" height="12" uuid="1383d622-b754-4406-9e84-3703d4dcbbce"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{mnc_count}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="490" y="1" width="100" height="12" uuid="c5f6a0d6-d555-4d18-92e8-47f5be7b140b"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{mrc_count_r}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="590" y="1" width="130" height="12" uuid="db18a4b8-0032-43b0-b597-f7736f35cbe1"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{mrc_count_s}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="720" y="1" width="80" height="12" uuid="44fd5c03-0753-4b61-942b-3bb479d033bd"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{mc_count} + $F{mnc_count} + $F{mrc_count_r} + $F{mrc_count_s}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="1" y="27" width="799" height="1" uuid="d59d02b8-7c53-46f2-981e-0f096b2ea576"/>
+			</line>
+			<textField>
+				<reportElement x="390" y="13" width="72" height="12" uuid="e61dd824-87d6-49d9-93a5-259b04a53577"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{mnc_count_sd}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="54" splitType="Stretch">
+			<staticText>
+				<reportElement x="330" y="33" width="110" height="17" uuid="b6f4aae5-3e35-4ecb-8d0d-8446fc6c7b27"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[** End of Report **]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="3" width="300" height="12" uuid="5f835b42-a20d-4acd-9812-5d17dc82e948"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<text><![CDATA[GRAND TOTAL]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="300" y="3" width="90" height="12" uuid="4a697ad0-3750-4ec8-90d3-f5c5c5782382"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{total_mc}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="390" y="3" width="100" height="12" uuid="711062ef-6e4b-4d31-98be-525321bf8ee2"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{total_mnc}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="490" y="3" width="100" height="12" uuid="a4c38faf-ca87-43cf-8647-4d31e8aa84cb"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{total_mrcr}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="590" y="3" width="130" height="12" uuid="b308efc5-d30a-4645-be42-a851357804d1"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{total_mrcs}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="720" y="3" width="80" height="12" uuid="992d1690-42c0-409c-9e0a-76728c216880"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{total_mc} + $V{total_mnc} + $V{total_mrcr} + $V{total_mrcs}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="1" y="29" width="799" height="1" uuid="ae94c013-e628-41df-b342-c9e17a142140"/>
+			</line>
+			<textField>
+				<reportElement x="390" y="15" width="72" height="12" uuid="8b26a5b2-12d1-42f6-8587-1abe0b9f07be"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{total_mnc_sd}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

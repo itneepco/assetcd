@@ -1,0 +1,17 @@
+@import '~@angular/material/theming';
+
+@include mat-core();
+
+$acd-primary: mat-palette($mat-blue-grey);
+$acd-accent: mat-palette($mat-pink, A200, A100, A400);
+$acd-warn:    mat-palette($mat-red);
+
+$acd-theme: mat-light-theme((
+    color: (
+      primary: $acd-primary,
+      accent: $acd-accent,
+      warn: $acd-warn,  
+    )
+  ));
+
+@include angular-material-theme($acd-theme);

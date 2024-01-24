@@ -1,0 +1,28 @@
+<mat-toolbar color="primary" class="mat-elevation-z10">
+    <!--<button *ngIf="authenticated" mat-icon-button (click)="sidenav.toggle()"><mat-icon>menu</mat-icon></button>
+    <span >&nbsp;&nbsp;</span>-->
+    <div *ngIf="authenticated">
+      <button
+        type="button"
+        aria-label="Toggle sidenav"
+        mat-icon-button
+        (click)="drawerToggle()">
+        <!--*ngIf="isHandset$ | async">-->
+        <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+      </button>
+    </div>
+    <span style="overflow:hidden">{{company?.packgShort}} - {{company?.clComp}}</span>
+    <span >&nbsp;&nbsp;</span>
+    <span class="spacer"></span>
+    <div *ngIf="authenticated">
+      <span>{{userFullName}}</span>
+      <button mat-icon-button [matMenuTriggerFor]="menu"><mat-icon>person</mat-icon></button>
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item (click)='vewProfile()'>View Profile</button>
+        <button mat-menu-item (click)='logout()'>Logout</button>
+      </mat-menu>
+    </div>
+    
+</mat-toolbar>
+  
+<router-outlet></router-outlet>

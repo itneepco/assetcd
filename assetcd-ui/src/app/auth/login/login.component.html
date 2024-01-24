@@ -1,0 +1,27 @@
+<mat-toolbar color="primary" class="mat-elevation-z5">
+    <span>Login</span>
+  </mat-toolbar>
+  
+  <!--<div style="background-image: url(assets/body_bg1.jpg);">-->
+   <mat-card>
+      <div *ngIf="errorMessage">
+        <span style="color:red">!! {{errorMessage}}</span>
+      </div>
+      <form #loginForm="ngForm" (ngSubmit)="onSubmit($event)">
+        <p>
+          <mat-form-field class="f-full-width">
+            <input type="text" matInput placeholder="Username" [(ngModel)]="data.username" name="name" required autofocus>
+          </mat-form-field>
+          <br>
+          <mat-form-field class="f-full-width">
+            <input type="password" matInput placeholder="Password" [(ngModel)]="data.password" name="password" required minlength="4">
+          </mat-form-field>
+          <br>
+        </p>
+  
+        <br>
+        <button mat-raised-button color="primary" type="submit" disabled="{{!loginForm.valid}}">Login</button>
+      </form>
+    </mat-card>
+  <!--</div>-->
+  

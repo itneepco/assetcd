@@ -1,0 +1,30 @@
+<mat-toolbar color="primary" class="mat-elevation-z4">
+  New User
+</mat-toolbar>
+
+<mat-card>
+  <div>
+    <form #newUserForm="ngForm" >
+      <mat-form-field >
+        <input matInput placeholder="First Name" [(ngModel)]="user.firstName" (change)="suggestUserCode()" name="first"  required>
+      </mat-form-field>
+      <br>
+      <mat-form-field >
+        <input matInput placeholder="Last Name" [(ngModel)]="user.lastName" (change)="suggestUserCode()" name="second" required>
+      </mat-form-field>
+      <br>
+      <mat-form-field >
+        <input matInput placeholder="User Code" [(ngModel)]="user.userCode" name="uc" #uc="ngModel" userCodeExists required>
+        <mat-error *ngIf="uc.errors?.userCodeExists">User code already exists</mat-error>
+      </mat-form-field>
+      <br>
+      <mat-form-field >
+        <input matInput placeholder="Email" [(ngModel)]="user.email" email #uemail="ngModel" name="email" required>
+        <mat-error *ngIf="uemail.errors?.email">Pleaes enter valid email</mat-error>
+      </mat-form-field>
+      <br>
+    
+      <button mat-raised-button color="primary" (click)='create()' disabled="{{!newUserForm.valid}}">Create</button>
+    </form>
+  </div>
+</mat-card>

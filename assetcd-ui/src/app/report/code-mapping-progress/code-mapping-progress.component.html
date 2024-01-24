@@ -1,0 +1,49 @@
+<mat-toolbar color="primary" class="mat-elevation-z4">
+  Report - Code Mapping Progress
+</mat-toolbar>
+
+<div>
+  <mat-card>
+    <!--<form #matDetailForm="ngForm" (ngSubmit)="onSubmit($event)">-->
+      <div class="e-container mat-elevation-z8">
+        <mat-table #table [dataSource]="dataSource">
+
+          <!-- Checkbox Column -->
+          <ng-container matColumnDef="select">
+            <mat-header-cell *matHeaderCellDef>
+              <mat-checkbox (change)="$event ? masterToggle() : null"
+                            [checked]="selection.hasValue() && isAllSelected()"
+                            [indeterminate]="selection.hasValue() && !isAllSelected()">
+              </mat-checkbox>
+            </mat-header-cell>
+            <mat-cell *matCellDef="let row">
+              <mat-checkbox (click)="$event.stopPropagation()"
+                            (change)="$event ? selection.toggle(row) : null"
+                            [checked]="selection.isSelected(row)">
+              </mat-checkbox>
+            </mat-cell>
+          </ng-container>
+
+          <!-- Project Code Column -->
+          <ng-container matColumnDef="projCode">
+            <mat-header-cell *matHeaderCellDef> Project Code </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.projCode}} </mat-cell>
+          </ng-container>
+
+          <!-- Name Column -->
+          <ng-container matColumnDef="projDesc">
+            <mat-header-cell *matHeaderCellDef> Project Description </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.projDesc}} </mat-cell>
+          </ng-container>
+
+          <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: displayedColumns;"
+                  (click)="selection.toggle(row)">
+          </mat-row>
+        </mat-table>
+      </div>
+      <br>
+      <button mat-raised-button type="submit" (click)="generateReport1()">Generate Report</button>
+    <!--</form>-->
+  </mat-card>
+</div>

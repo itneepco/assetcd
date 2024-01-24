@@ -1,0 +1,66 @@
+<mat-toolbar color="primary" class="mat-elevation-z4">
+  <span style="overflow:hidden">Help</span>
+  <span >&nbsp;&nbsp;</span>
+  <span class="spacer"></span>
+  <button *ngIf="page == 'legacy matfin mapping'" mat-raised-button color="primary" (click)='setPage("subclass mfgl mapping")'>SUB CLASS & MFGL MAPPING</button>
+  <button *ngIf="page == 'subclass mfgl mapping'" mat-raised-button color="primary" (click)='setPage("legacy matfin mapping")'>LEGACY MATFIN MAPPING</button>
+</mat-toolbar>
+
+
+<div>
+  <mat-card>
+
+    <div *ngIf="page == 'legacy matfin mapping'">
+      <h2><b>ASSET CODIFICATION GRAMMER WITH LEGACY MATFIN MAPPING</b></h2>
+    
+      <table>
+        <tbody>
+          <tr>
+            <th>GL CODE</th>
+            <th>GL DESCRIPTION</th>
+            <th>PROPOSED ASSET CLASS NO</th>
+            <th>ASSET CLASS DESCRIPTION</th>
+            <th>PROPOSED SUB-CLASS NO</th>
+            <th>LEGACY MATFIN CODE</th>
+            <th>LEGACY MATFIN DESCRIPTION</th>
+          </tr>
+          <tr *ngFor="let mfgl of mfgls">
+            <td>{{mfgl.glCode}}</td>
+            <td>{{mfgl.glDesc}}</td>
+            <td>{{mfgl.glCode.slice(-4)}}</td>
+            <td>{{mfgl.glDesc}}</td>
+            <td>{{mfgl.subClass}}</td>
+            <td>{{mfgl.mfglCode}}</td>
+            <td>{{mfgl.descr}}</td>
+          </tr>
+        </tbody>
+      </table>
+
+    </div>
+
+    <div *ngIf="page == 'subclass mfgl mapping'">
+      <h2><b>SUB CLASS - MFGL MAPPING</b></h2>
+    
+      <table>
+        <tbody>
+          <tr>
+            <th>CLASS CODE</th>
+            <th>SUB CLASS</th>
+            <th>CODE</th>
+            <th>MFGL CODE</th>
+            <th>DESCR</th>
+          </tr>
+          <tr *ngFor="let mfgl of mfgls">
+            <td>{{mfgl.glCode.slice(-4)}}</td>
+            <td>{{mfgl.subClass}}</td>
+            <td>{{mfgl.glCode.slice(-4)}}{{mfgl.subClass}}</td>
+            <td>{{mfgl.mfglCode}}</td>
+            <td>{{mfgl.descr}}</td>
+          </tr>
+        </tbody>
+      </table>
+
+    </div>
+
+  </mat-card>
+</div>
